@@ -4,6 +4,8 @@ import { join } from 'node:path'
 
 export default async function migrations(request, response) {
 
+  if (request.method !== 'POST' || request.method !== 'GET') return response.status(405).end()
+
   const dbClient = await database.getNewClient()
 
   const defaultOptions = {
@@ -32,7 +34,4 @@ export default async function migrations(request, response) {
       return response.status(200).json(migratedMigrations)
     }
   }
-
-  return response.status(405)
-
 }
