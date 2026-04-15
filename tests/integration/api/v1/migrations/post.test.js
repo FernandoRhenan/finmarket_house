@@ -1,10 +1,10 @@
 import database from 'infra/database.js'
+import orchestrator from 'tests/orchestrator'
 
-async function clearDatabase() {
+beforeAll(async () => {
+  await orchestrator.waitForAllServices()
   await database.query('drop schema public cascade; create schema public;')
-}
-
-beforeAll(clearDatabase)
+})
 
 test("POST to /api/v1/status should return 200", async () => {
 
