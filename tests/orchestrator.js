@@ -23,4 +23,4 @@ const orchestrator = {
   waitForAllServices,
 };
 
-export default orchestrator
+export default orchestrator;
