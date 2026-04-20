@@ -1,6 +1,6 @@
 name: Linting
 
-on: "pull_request"
+on: 'pull_request'
 jobs:
   prettier:
     name: Prettier
@@ -10,7 +10,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "lts/hydrogen"
+          node-version: 'lts/hydrogen'
 
       - run: npm ci
 
@@ -24,7 +24,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "lts/hydrogen"
+          node-version: 'lts/hydrogen'
 
       - run: npm ci
 
@@ -40,7 +40,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "lts/hydrogen"
+          node-version: 'lts/hydrogen'
 
       - run: npm ci
 
