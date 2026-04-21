@@ -9,7 +9,9 @@ async function waitForAllServices() {
       maxTimeout: 1000,
     })
 
-    async function fetchStatusPage() {
+    async function fetchStatusPage(bail, tries) {
+      console.log('Count of tries: ' + tries)
+
       const response = await fetch('http://localhost:3000/api/v1/status')
 
       if (response.status !== 200) {
