@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npm run services:up && npm run services:wait:database && npm run migrations:up && next dev",
-    "test": "npm run services:up && concurrently --n next,jest --hide next -k -s command-jest \"next dev\" \"jest --runInBand\"",
-    "posttest": "npm run services:stop",
+    "test": "npm run services:up && (concurrently -n \"Next,Jest\" -c green,yellow --hide Next -k -s command-jest \"next dev\" \"jest --runInBand --silent\"; npm run services:stop)",
     "test:watch": "jest --watchAll --runInBand",
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
@@ -17,7 +16,7 @@
     "services:down": "docker compose -f infra/compose.yaml down",
     "migrations:create": "node-pg-migrate -m infra/migrations create",
     "migrations:up": "node-pg-migrate -m infra/migrations --envPath .env.development up",
-    "services:wait:database": "node ./infra/scripts/services:wait:database.js",
+    "services:wait:database": "node ./infra/scripts/waitDatabase.js",
     "prepare": "husky",
     "commit": "cz"
   },
