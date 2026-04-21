@@ -10,7 +10,7 @@ async function waitForAllServices() {
     })
 
     async function fetchStatusPage(bail, tries) {
-      console.log('Count of tries: ' + tries)
+      // console.log('Count of tries: ' + tries)
 
       const response = await fetch('http://localhost:3000/api/v1/status')
 
