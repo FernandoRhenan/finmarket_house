@@ -1,4 +1,5 @@
 import retry from 'async-retry'
+import database from 'infra/database'
 
 async function waitForAllServices() {
   await waitForWebServer()
@@ -9,7 +10,9 @@ async function waitForAllServices() {
       maxTimeout: 1000,
     })
 
-    async function fetchStatusPage() {
+    async function fetchStatusPage(bail, tries) {
+      // console.log('Count of tries: ' + tries)
+
       const response = await fetch('http://localhost:3000/api/v1/status')
 
       if (response.status !== 200) {
@@ -19,8 +22,13 @@ async function waitForAllServices() {
   }
 }
 
+async function cleanDatabase() {
+  await database.query('drop schema public cascade; create schema public;')
+}
+
 const orchestrator = {
   waitForAllServices,
+  cleanDatabase,
 }
 
 export default orchestrator
