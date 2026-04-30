@@ -12,6 +12,6 @@ jobs:
         with:
           node-version: 'lts/krypton'
 
-      - run: npm i
+      - run: npm ci
 
       - run: npm test
