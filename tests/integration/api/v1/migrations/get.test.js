@@ -1,4 +1,5 @@
 import orchestrator from 'tests/orchestrator'
+import { beforeAll, describe, expect, test } from 'vitest'
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices()
