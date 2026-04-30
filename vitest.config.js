@@ -11,6 +11,7 @@ export default defineConfig({
     alias: {
       infra: path.resolve(__dirname, './infra'),
       tests: path.resolve(__dirname, './tests'),
+      models: path.resolve(__dirname, './models'),
     },
   },
   test: {
