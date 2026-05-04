@@ -2,7 +2,7 @@ name: Automated Tests
 
 on: 'pull_request'
 jobs:
-  jest:
+  vitest:
     name: Vitest Ubuntu
     runs-on: ubuntu-latest
     steps:
