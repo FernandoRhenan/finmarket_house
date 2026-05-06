@@ -1,4 +1,4 @@
-export const up = (pgm) => {
+module.exports.up = (pgm) => {
   pgm.createTable('users', {
     id: {
       type: 'uuid',
@@ -35,4 +35,4 @@ export const up = (pgm) => {
   })
 }
 
-export const down = false
+module.exports.down = false
