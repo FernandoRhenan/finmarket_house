@@ -1,4 +1,4 @@
-export const up = (pgm) => {
+module.exports.up = (pgm) => {
   pgm.createTable('users', {
     id: {
       type: 'uuid',
@@ -17,20 +17,22 @@ export const up = (pgm) => {
     },
 
     password: {
-      type: 'varchar(72)',
+      type: 'varchar(60)',
       notNull: true,
     },
 
     created_at: {
       type: 'timestamptz',
-      default: pgm.func('now()'),
+      notNull: true,
+      default: pgm.func("timezone('utc', now())"),
     },
 
     updated_at: {
       type: 'timestamptz',
-      default: pgm.func('now()'),
+      notNull: true,
+      default: pgm.func("timezone('utc', now())"),
     },
   })
 }
 
-export const down = false
+module.exports.down = false
