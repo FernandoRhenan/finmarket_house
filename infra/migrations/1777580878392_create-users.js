@@ -17,18 +17,20 @@ export const up = (pgm) => {
     },
 
     password: {
-      type: 'varchar(72)',
+      type: 'varchar(60)',
       notNull: true,
     },
 
     created_at: {
       type: 'timestamptz',
-      default: pgm.func('now()'),
+      notNull: true,
+      default: pgm.func("timezone('utc', now())"),
     },
 
     updated_at: {
       type: 'timestamptz',
-      default: pgm.func('now()'),
+      notNull: true,
+      default: pgm.func("timezone('utc', now())"),
     },
   })
 }
