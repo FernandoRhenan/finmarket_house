@@ -1,6 +1,8 @@
 import { version as uuidVersion } from 'uuid'
 import orchestrator from 'tests/orchestrator.js'
 import { beforeAll, describe, expect, test } from 'vitest'
+import user from 'models/user.js'
+import password from 'models/password.js'
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices()
@@ -19,7 +21,7 @@ describe('POST /api/v1/users', () => {
         body: JSON.stringify({
           username: 'joao',
           email: 'joao@email.com',
-          password: 'joaocombraco222',
+          password: 'joao123',
         }),
       })
 
@@ -31,7 +33,6 @@ describe('POST /api/v1/users', () => {
         id: responseBody.id,
         username: 'joao',
         email: 'joao@email.com',
-        password: 'joaocombraco222',
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       })
@@ -39,6 +40,21 @@ describe('POST /api/v1/users', () => {
       expect(uuidVersion(responseBody.id)).toBe(4)
       expect(Date.parse(responseBody.created_at)).not.toBeNaN()
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN()
+
+      const userInDatabase = await user.findOneByUsername(responseBody.username)
+      const correctPaswordMatch = await password.compare(
+        'joao123',
+        userInDatabase.password
+      )
+
+      expect(correctPaswordMatch).toBeTruthy()
+
+      const incorrectPaswordMatch = await password.compare(
+        'joao122',
+        userInDatabase.password
+      )
+
+      expect(incorrectPaswordMatch).toBeFalsy()
     })
 
     test('With duplicated "email"', async () => {
