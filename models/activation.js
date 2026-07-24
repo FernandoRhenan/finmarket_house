@@ -75,10 +75,69 @@ async function findOneByValidToken(token) {
   return results.rows[0]
 }
 
+async function findUsedToken(token) {
+  const results = await database.query({
+    text: `
+      SELECT
+        *
+      FROM
+        user_activation_tokens
+      WHERE
+        id = $1
+        AND
+        used_at IS NOT NULL
+      LIMIT
+        1
+    ;
+    `,
+    values: [token],
+  })
+
+  if (results.rowCount === 0) {
+    throw new NotFoundError({
+      message: 'O token de ativação não foi encontrado ou expirou.',
+      action: 'Faça um novo cadastro.',
+    })
+  }
+
+  return results.rows[0]
+}
+
+async function updateTokenToUsed(token) {
+  const results = await database.query({
+    text: `
+      UPDATE
+        user_activation_tokens
+      SET
+        used_at = timezone('utc', now()),
+        updated_at = timezone('utc', now())
+      WHERE
+        id = $1
+        AND
+        expires_at > NOW()
+      RETURNING
+        *
+    ;
+    `,
+    values: [token],
+  })
+
+  if (results.rowCount === 0) {
+    throw new NotFoundError({
+      message: 'O token de ativação não foi confirmado.',
+      action: 'Faça um novo cadastro.',
+    })
+  }
+
+  return results.rows[0]
+}
+
 const activation = {
   sendEmailToUser,
   create,
   findOneByValidToken,
+  findUsedToken,
+  updateTokenToUsed,
 }
 
 export default activation

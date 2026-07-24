@@ -220,6 +220,28 @@ async function validateUniqueEmail(email) {
   }
 }
 
+async function updateFeaturesToCreateSession(userId) {
+  const results = await database.query({
+    text: `
+          UPDATE
+            users
+          SET features = ARRAY['create:session']
+          WHERE
+            id = $1
+          RETURNING
+            id
+          ;`,
+    values: [userId],
+  })
+
+  if (results.rowCount === 0) {
+    throw new NotFoundError({
+      message: 'O usuário informado não foi encontrado.',
+      action: 'Faça um novo registro.',
+    })
+  }
+}
+
 async function hashPasswordInObject(userInputValues) {
   const hashedPassword = await password.hash(userInputValues.password)
   userInputValues.password = hashedPassword
@@ -230,6 +252,7 @@ const user = {
   findOneById,
   findOneByUsername,
   findOneByEmail,
+  updateFeaturesToCreateSession,
   update,
 }
 

@@ -1,5 +1,6 @@
 import webserver from 'infra/webserver'
 import activation from 'models/activation'
+import user from 'models/user'
 import orchestrator from 'tests/orchestrator'
 import { beforeAll, describe, expect, test } from 'vitest'
 
@@ -12,6 +13,8 @@ beforeAll(async () => {
 
 describe('Use case: Registration flow (all successful)', () => {
   let createUserResponseBody
+  let activationToken
+
   test('Create user account', async () => {
     const createUserResponse = await fetch(
       'http://localhost:3000/api/v1/users',
@@ -48,7 +51,7 @@ describe('Use case: Registration flow (all successful)', () => {
 
     const token = orchestrator.getTokenFromEmail(lastEmail.text)
 
-    const activationToken = await activation.findOneByValidToken(token)
+    activationToken = await activation.findOneByValidToken(token)
 
     expect(lastEmail.sender).toBe('<test@test.com>')
     expect(lastEmail.recipients[0]).toBe('<registration.flow@email.com>')
@@ -63,7 +66,24 @@ describe('Use case: Registration flow (all successful)', () => {
     expect(activationToken.used_at).toBe(null)
   })
 
-  test('Active account', async () => {})
+  test('Active account', async () => {
+    const activationResponse = await fetch(
+      `http://localhost:3000/api/v1/activations/${activationToken.id}`,
+      {
+        method: 'PATCH',
+      }
+    )
+
+    expect(activationResponse.status).toBe(200)
+
+    const activationResponseBody = await activationResponse.json()
+
+    expect(Date.parse(activationResponseBody.used_at)).not.toBeNaN()
+
+    const confirmedUser = await user.findOneById(activationResponseBody.user_id)
+
+    expect(confirmedUser.features).toEqual(['create:session'])
+  })
 
   test('Login', async () => {})
 
