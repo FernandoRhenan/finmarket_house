@@ -89,6 +89,12 @@ async function getLastEmail() {
   return lastEmailItem
 }
 
+function getTokenFromEmail(message) {
+  const regex = /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/
+  const results = regex.exec(message)
+  return results[0] ? results[0] : null
+}
+
 const orchestrator = {
   waitForAllServices,
   cleanDatabase,
@@ -97,6 +103,7 @@ const orchestrator = {
   createSession,
   deleteAllEmails,
   getLastEmail,
+  getTokenFromEmail,
 }
 
 export default orchestrator
