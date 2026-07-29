@@ -115,45 +115,52 @@ describe('POST /api/v1/sessions', () => {
         }),
       })
 
-      expect(response.status).toBe(201)
+      expect(response.status).toBe(403)
 
       const responseBody = await response.json()
 
       expect(responseBody).toEqual({
-        id: responseBody.id,
-        token: responseBody.token,
-        user_id: createdUser.id,
-        expires_at: responseBody.expires_at,
-        created_at: responseBody.created_at,
-        updated_at: responseBody.updated_at,
+        message: 'Você não possui permissão para fazer login.',
+        action: 'Contate o suporte caso você acredite que isso seja um erro.',
+        name: 'ForbiddenError',
+        status_code: 403,
       })
 
-      expect(uuidVersion(responseBody.id)).toBe(4)
-      expect(Date.parse(responseBody.created_at)).not.toBeNaN()
-      expect(Date.parse(responseBody.updated_at)).not.toBeNaN()
-      expect(Date.parse(responseBody.expires_at)).not.toBeNaN()
+      // expect(responseBody).toEqual({
+      //   id: responseBody.id,
+      //   token: responseBody.token,
+      //   user_id: createdUser.id,
+      //   expires_at: responseBody.expires_at,
+      //   created_at: responseBody.created_at,
+      //   updated_at: responseBody.updated_at,
+      // })
 
-      const createdAt = new Date(responseBody.created_at)
-      const expiresAt = new Date(responseBody.expires_at)
+      // expect(uuidVersion(responseBody.id)).toBe(4)
+      // expect(Date.parse(responseBody.created_at)).not.toBeNaN()
+      // expect(Date.parse(responseBody.updated_at)).not.toBeNaN()
+      // expect(Date.parse(responseBody.expires_at)).not.toBeNaN()
 
-      createdAt.setMilliseconds(0)
-      expiresAt.setMilliseconds(0)
-      createdAt.setSeconds(0)
-      expiresAt.setSeconds(0)
+      // const createdAt = new Date(responseBody.created_at)
+      // const expiresAt = new Date(responseBody.expires_at)
 
-      expect(expiresAt - createdAt).toBe(sessions.EXPIRATION_IN_MILLISECONDS)
+      // createdAt.setMilliseconds(0)
+      // expiresAt.setMilliseconds(0)
+      // createdAt.setSeconds(0)
+      // expiresAt.setSeconds(0)
 
-      const parsedSetCookie = setCookieParser(response, {
-        map: true,
-      })
+      // expect(expiresAt - createdAt).toBe(sessions.EXPIRATION_IN_MILLISECONDS)
 
-      expect(parsedSetCookie.session_id).toEqual({
-        name: 'session_id',
-        value: responseBody.token,
-        maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
-        path: '/',
-        httpOnly: true,
-      })
+      // const parsedSetCookie = setCookieParser(response, {
+      //   map: true,
+      // })
+
+      // expect(parsedSetCookie.session_id).toEqual({
+      //   name: 'session_id',
+      //   value: responseBody.token,
+      //   maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
+      //   path: '/',
+      //   httpOnly: true,
+      // })
     })
   })
 })

@@ -2,6 +2,7 @@ import database from 'infra/database'
 import email from 'infra/email'
 import { NotFoundError } from 'infra/error'
 import webserver from 'infra/webserver'
+import user from 'models/user'
 
 const EXPIRATION_IN_MILISECONDS = 60 * 15 * 1000
 
@@ -132,12 +133,18 @@ async function updateTokenToUsed(token) {
   return results.rows[0]
 }
 
+async function activateUserById(userId) {
+  const activatedUser = await user.setFeatures(userId, ['create:session'])
+  return activatedUser
+}
+
 const activation = {
   sendEmailToUser,
   create,
   findOneByValidToken,
   findUsedToken,
   updateTokenToUsed,
+  activateUserById,
 }
 
 export default activation

@@ -13,7 +13,7 @@ async function patchHandler(request, response) {
   const { token } = request.query
 
   const activatedToken = await activation.updateTokenToUsed(token)
-  await user.updateFeaturesToCreateSession(activatedToken.user_id)
+  await activation.activateUserById(activatedToken.user_id)
 
   return response.status(200).json(activatedToken)
 }

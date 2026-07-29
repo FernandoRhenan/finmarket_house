@@ -220,18 +220,23 @@ async function validateUniqueEmail(email) {
   }
 }
 
-async function updateFeaturesToCreateSession(userId) {
+async function hashPasswordInObject(userInputValues) {
+  const hashedPassword = await password.hash(userInputValues.password)
+  userInputValues.password = hashedPassword
+}
+
+async function setFeatures(userId, features) {
   const results = await database.query({
     text: `
           UPDATE
             users
-          SET features = ARRAY['create:session']
+          SET features = $2
           WHERE
             id = $1
           RETURNING
             id
           ;`,
-    values: [userId],
+    values: [userId, features],
   })
 
   if (results.rowCount === 0) {
@@ -242,17 +247,12 @@ async function updateFeaturesToCreateSession(userId) {
   }
 }
 
-async function hashPasswordInObject(userInputValues) {
-  const hashedPassword = await password.hash(userInputValues.password)
-  userInputValues.password = hashedPassword
-}
-
 const user = {
   create,
   findOneById,
   findOneByUsername,
   findOneByEmail,
-  updateFeaturesToCreateSession,
+  setFeatures,
   update,
 }
 
