@@ -234,7 +234,7 @@ async function setFeatures(userId, features) {
           WHERE
             id = $1
           RETURNING
-            id
+            *
           ;`,
     values: [userId, features],
   })

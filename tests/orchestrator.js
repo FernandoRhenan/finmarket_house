@@ -4,6 +4,7 @@ import migrator from 'models/migrator'
 import user from 'models/user'
 import session from 'models/session'
 import { faker } from '@faker-js/faker'
+import activation from 'models/activation'
 
 const emailHttppUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`
 
@@ -95,6 +96,10 @@ function getTokenFromEmail(message) {
   return results[0] ? results[0] : null
 }
 
+async function activateUserById(userId) {
+  return await activation.activateUserById(userId)
+}
+
 const orchestrator = {
   waitForAllServices,
   cleanDatabase,
@@ -104,6 +109,7 @@ const orchestrator = {
   deleteAllEmails,
   getLastEmail,
   getTokenFromEmail,
+  activateUserById,
 }
 
 export default orchestrator
