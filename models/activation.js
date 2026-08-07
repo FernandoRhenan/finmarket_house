@@ -1,10 +1,11 @@
 import database from 'infra/database'
 import email from 'infra/email'
-import { NotFoundError } from 'infra/error'
+import { ForbiddenError, NotFoundError } from 'infra/error'
 import webserver from 'infra/webserver'
 import user from 'models/user'
+import authorization from './authorization'
 
-const EXPIRATION_IN_MILISECONDS = 60 * 15 * 1000
+const EXPIRATION_IN_MILLISECONDS = 60 * 15 * 1000
 
 async function sendEmailToUser(user, activationToken) {
   await email.send({
@@ -22,9 +23,9 @@ Equipe Finmarket
 }
 
 async function create(userId) {
-  const expires_at = new Date(Date.now() + EXPIRATION_IN_MILISECONDS)
+  const expiresAt = new Date(Date.now() + EXPIRATION_IN_MILLISECONDS)
 
-  const newToken = await runInsertQuery(userId, expires_at)
+  const newToken = await runInsertQuery(userId, expiresAt)
 
   return newToken
 
@@ -134,6 +135,15 @@ async function updateTokenToUsed(token) {
 }
 
 async function activateUserById(userId) {
+  const userToActivate = await user.findOneById(userId)
+
+  if (!authorization.can(userToActivate, 'read:activation_token')) {
+    throw new ForbiddenError({
+      message: 'Você não pode mais utilizar tokens de ativação.',
+      action: 'Entre em contato com o suporte.',
+    })
+  }
+
   const activatedUser = await user.setFeatures(userId, [
     'create:session',
     'read:session',
@@ -148,6 +158,7 @@ const activation = {
   findUsedToken,
   updateTokenToUsed,
   activateUserById,
+  EXPIRATION_IN_MILLISECONDS,
 }
 
 export default activation
