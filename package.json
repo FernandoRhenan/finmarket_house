@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npm run services:up && npm run services:wait:database && npm run migrations:up && next dev",
-    "test": "npm run services:up && (concurrently -n \"Next,Vitest\" -c white,green --hide Next -k -s command-vitest \"next dev\" \"vitest --watch=false --no-file-parallelism\"; npm run services:stop)",
+    "test": "npm run services:up && (concurrently -n \"Next,Vitest\" -c white,green -k -s command-vitest \"next dev\" \"vitest --watch=false --no-file-parallelism\"; npm run services:stop)",
     "test:watch": "vitest --no-file-parallelism",
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",

@@ -164,7 +164,7 @@ async function update(username, userInputValues) {
       WHERE
         id = $1
       RETURNING
-        id, username, email, created_at, updated_at
+        *
       `,
       values: [
         userWithNewValues.id,
@@ -245,6 +245,32 @@ async function setFeatures(userId, features) {
       action: 'Faça um novo registro.',
     })
   }
+
+  return results.rows[0]
+}
+
+async function addFeatures(userId, features) {
+  const results = await database.query({
+    text: `
+          UPDATE
+            users
+          SET 
+            features = array_cat(features, $2),
+            updated_at = timezone('utc', now())
+          WHERE
+            id = $1
+          RETURNING
+            *
+          ;`,
+    values: [userId, features],
+  })
+
+  if (results.rowCount === 0) {
+    throw new NotFoundError({
+      message: 'O usuário informado não foi encontrado.',
+      action: 'Faça um novo registro.',
+    })
+  }
 }
 
 const user = {
@@ -254,6 +280,7 @@ const user = {
   findOneByEmail,
   setFeatures,
   update,
+  addFeatures,
 }
 
 export default user

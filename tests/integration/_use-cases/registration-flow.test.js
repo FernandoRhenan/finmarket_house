@@ -83,7 +83,11 @@ describe('Use case: Registration flow (all successful)', () => {
 
     const confirmedUser = await user.findOneById(activationResponseBody.user_id)
 
-    expect(confirmedUser.features).toEqual(['create:session', 'read:session'])
+    expect(confirmedUser.features).toEqual([
+      'create:session',
+      'read:session',
+      'update:user',
+    ])
   })
 
   test('Login', async () => {
@@ -126,7 +130,7 @@ describe('Use case: Registration flow (all successful)', () => {
       username: 'RegistrationFlow',
       email: 'registration.flow@email.com',
       password: createUserResponseBody.password,
-      features: ['create:session', 'read:session'],
+      features: ['create:session', 'read:session', 'update:user'],
       created_at: createUserResponseBody.created_at,
       updated_at: createUserResponseBody.updated_at,
     })

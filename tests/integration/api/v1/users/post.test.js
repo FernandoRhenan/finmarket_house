@@ -137,4 +137,8 @@ describe('POST /api/v1/users', () => {
       })
     })
   })
+
+  describe('Default user', () => {
+    test('With unique and valid data', async () => {})
+  })
 })
