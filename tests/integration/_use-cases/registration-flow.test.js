@@ -1,3 +1,4 @@
+import email from 'infra/email'
 import webserver from 'infra/webserver'
 import activation from 'models/activation'
 import user from 'models/user'
@@ -39,8 +40,6 @@ describe('Use case: Registration flow (all successful)', () => {
     expect(createUserResponseBody).toEqual({
       id: createUserResponseBody.id,
       username: 'RegistrationFlow',
-      email: 'registration.flow@email.com',
-      password: createUserResponseBody.password,
       features: ['read:activation_token'],
       created_at: createUserResponseBody.created_at,
       updated_at: createUserResponseBody.updated_at,
@@ -128,8 +127,7 @@ describe('Use case: Registration flow (all successful)', () => {
     expect(responseBody).toEqual({
       id: createUserResponseBody.id,
       username: 'RegistrationFlow',
-      email: 'registration.flow@email.com',
-      password: createUserResponseBody.password,
+      email: responseBody.email,
       features: ['create:session', 'read:session', 'update:user'],
       created_at: createUserResponseBody.created_at,
       updated_at: createUserResponseBody.updated_at,

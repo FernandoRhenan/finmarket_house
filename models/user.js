@@ -28,7 +28,6 @@ async function create(userInputValues) {
         userInputValues.features,
       ],
     })
-
     return results.rows[0]
   }
 

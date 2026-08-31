@@ -169,9 +169,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       expect(responseBody).toStrictEqual({
         id: responseBody.id,
         username: 'uniqueUser2',
-        email: responseBody.email,
         features: ['create:session', 'read:session', 'update:user'],
-        password: responseBody.password,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       })
@@ -245,9 +243,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       expect(responseBody).toStrictEqual({
         id: responseBody.id,
         username: 'uniqueEmailUser1',
-        email: responseBody.email,
         features: ['create:session', 'read:session', 'update:user'],
-        password: responseBody.password,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       })
@@ -300,15 +296,13 @@ describe('PATCH /api/v1/users/[username]', () => {
       expect(responseBody).toStrictEqual({
         id: responseBody.id,
         username: createdUser.username,
-        email: createdUser.email,
         features: ['create:session', 'read:session', 'update:user'],
-        password: responseBody.password,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       })
 
       expect(createdUser.username).toBe(responseBody.username)
-      expect(createdUser.email).toBe(responseBody.email)
+      expect(createdUser.email).toBe(userInDatabase.email)
       expect(correctPasswordMatch).toBeTruthy()
       expect(oldPasswordMatch).toBeFalsy()
       expect(uuidVersion(responseBody.id)).toBe(4)
@@ -355,9 +349,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       expect(responseBody).toStrictEqual({
         id: defaultUser.id,
         username: 'randomUser',
-        email: defaultUser.email,
         features: defaultUser.features,
-        password: defaultUser.password,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       })

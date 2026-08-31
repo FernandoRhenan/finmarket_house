@@ -13,7 +13,7 @@ beforeAll(async () => {
 describe('GET /api/v1/user', () => {
   describe('Anonymous user', () => {
     test('With valid session', async () => {
-      const createdUser = await orchestrator.createUser({
+      await orchestrator.createUser({
         username: 'UserWithForbiddenSession',
       })
 
@@ -38,7 +38,7 @@ describe('GET /api/v1/user', () => {
         username: 'UserWithValidSession',
       })
 
-      const activatedUser = await orchestrator.activateUserById(createdUser.id)
+      await orchestrator.activateUserById(createdUser.id)
       const sessionObject = await orchestrator.createSession(createdUser.id)
 
       const response = await fetch('http://localhost:3000/api/v1/user', {
@@ -60,7 +60,6 @@ describe('GET /api/v1/user', () => {
         id: createdUser.id,
         username: 'UserWithValidSession',
         email: createdUser.email,
-        password: createdUser.password,
         features: ['create:session', 'read:session', 'update:user'],
         created_at: createdUser.created_at.toISOString(),
         updated_at: createdUser.updated_at.toISOString(),
@@ -105,7 +104,7 @@ describe('GET /api/v1/user', () => {
       const createdUser = await orchestrator.createUser({
         username: 'ValidSessionCloseToEnding',
       })
-      const activatedUser = await orchestrator.activateUserById(createdUser.id)
+      await orchestrator.activateUserById(createdUser.id)
       const sessionObject = await orchestrator.createSession(createdUser.id)
 
       vitest.useRealTimers()
@@ -124,7 +123,6 @@ describe('GET /api/v1/user', () => {
         id: createdUser.id,
         username: 'ValidSessionCloseToEnding',
         email: createdUser.email,
-        password: createdUser.password,
         features: ['create:session', 'read:session', 'update:user'],
         created_at: createdUser.created_at.toISOString(),
         updated_at: createdUser.updated_at.toISOString(),
