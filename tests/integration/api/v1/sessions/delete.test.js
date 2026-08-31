@@ -1,6 +1,5 @@
 import { version as uuidVersion } from 'uuid'
 import orchestrator from 'tests/orchestrator.js'
-import sessions from 'models/session.js'
 import { beforeAll, describe, expect, test, vitest } from 'vitest'
 import setCookieParser from 'set-cookie-parser'
 import session from 'models/session.js'

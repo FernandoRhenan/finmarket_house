@@ -1,7 +1,6 @@
 import database from 'infra/database'
 import { UnauthorizedError } from 'infra/error'
 import crypto from 'node:crypto'
-import { text } from 'node:stream/consumers'
 
 const EXPIRATION_IN_MILLISECONDS = 60 * 60 * 24 * 30 * 1000 // 30 Days
 

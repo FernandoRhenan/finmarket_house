@@ -4,6 +4,7 @@ import migrator from 'models/migrator'
 import user from 'models/user'
 import session from 'models/session'
 import { faker } from '@faker-js/faker'
+import activation from 'models/activation'
 
 const emailHttppUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`
 
@@ -78,6 +79,8 @@ async function getLastEmail() {
   const emailListBody = await emailListResponse.json()
   const lastEmailItem = emailListBody.pop()
 
+  if (!lastEmailItem) return null
+
   const emailTextResponse = await fetch(
     `${emailHttppUrl}/messages/${lastEmailItem.id}.plain`
   )
@@ -85,6 +88,21 @@ async function getLastEmail() {
 
   lastEmailItem.text = emailTextBody
   return lastEmailItem
+}
+
+function getTokenFromEmail(message) {
+  const regex = /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/
+  const results = regex.exec(message)
+  return results[0] ? results[0] : null
+}
+
+async function activateUserById(userId) {
+  return await activation.activateUserById(userId)
+}
+
+async function addFeaturesToUser(userId, features) {
+  const updatedUser = await user.addFeatures(userId, features)
+  return updatedUser
 }
 
 const orchestrator = {
@@ -95,6 +113,9 @@ const orchestrator = {
   createSession,
   deleteAllEmails,
   getLastEmail,
+  getTokenFromEmail,
+  activateUserById,
+  addFeaturesToUser,
 }
 
 export default orchestrator

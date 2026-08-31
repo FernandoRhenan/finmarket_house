@@ -2,14 +2,17 @@ import database from 'infra/database.js'
 import { InternalServerError, MethodNotAllowedError } from 'infra/error'
 import { createRouter } from 'next-connect'
 import controller from 'infra/controller'
+import authorization from 'models/authorization'
 
 const router = createRouter()
 
+router.use(controller.injectAnonymousOrUser)
 router.get(getHandler)
 
 export default router.handler(controller.errorHandlers)
 
 async function getHandler(request, response) {
+  const userTryingToGet = request.context.user
   const databaseName = process.env.POSTGRES_DB
   const updatedAt = new Date().toISOString()
   const databaseVersion = await database.query('SHOW server_version;')
@@ -20,7 +23,7 @@ async function getHandler(request, response) {
     values: [databaseName],
   })
 
-  response.status(200).json({
+  let responseBody = {
     updated_at: updatedAt,
     dependencies: {
       database: {
@@ -29,5 +32,13 @@ async function getHandler(request, response) {
         current_connections: currentConnections.rows[0].count,
       },
     },
-  })
+  }
+
+  const secureOutputValues = authorization.filterOutput(
+    userTryingToGet,
+    'read:status',
+    responseBody
+  )
+
+  response.status(200).json(secureOutputValues)
 }
