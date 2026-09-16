@@ -4,6 +4,7 @@ import sessions from 'models/session.js'
 import { beforeAll, describe, expect, test } from 'vitest'
 import setCookieParser from 'set-cookie-parser'
 import session from 'models/session.js'
+import webserver from 'infra/webserver'
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices()
@@ -18,7 +19,7 @@ describe('POST /api/v1/sessions', () => {
         password: 'senha-correta',
       })
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,7 +47,7 @@ describe('POST /api/v1/sessions', () => {
         email: 'emailcorreto@email.com',
       })
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +76,7 @@ describe('POST /api/v1/sessions', () => {
         password: 'senha-incorreta',
       })
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ describe('POST /api/v1/sessions', () => {
 
       await orchestrator.activateUserById(createdUser.id)
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,3 +1,4 @@
+import webserver from 'infra/webserver'
 import orchestrator from 'tests/orchestrator.js'
 import { beforeAll, describe, expect, test } from 'vitest'
 
@@ -9,7 +10,7 @@ beforeAll(async () => {
 describe('GET /api/v1/status', () => {
   describe('Anonymous user', () => {
     test('Getting the system status', async () => {
-      const response = await fetch('http://localhost:3000/api/v1/status')
+      const response = await fetch(`${webserver.origin}/api/v1/status`)
       expect(response.status).toBe(200)
 
       const responseBody = await response.json()
@@ -31,7 +32,7 @@ describe('GET /api/v1/status', () => {
       await orchestrator.addFeaturesToUser(user.id, ['read:status:all'])
       const sessionObject = await orchestrator.createSession(user.id)
 
-      const response = await fetch('http://localhost:3000/api/v1/status', {
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
         headers: {
           cookie: `session_id=${sessionObject.token}`,
         },

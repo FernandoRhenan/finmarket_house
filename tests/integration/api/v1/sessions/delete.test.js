@@ -3,6 +3,7 @@ import orchestrator from 'tests/orchestrator.js'
 import { beforeAll, describe, expect, test, vitest } from 'vitest'
 import setCookieParser from 'set-cookie-parser'
 import session from 'models/session.js'
+import webserver from 'infra/webserver'
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices()
@@ -15,7 +16,7 @@ describe('DELETE /api/v1/sessions', () => {
     test('With nonexistent session', async () => {
       const nonexistentToken = '123456789token'
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ describe('DELETE /api/v1/sessions', () => {
 
       vitest.useRealTimers()
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ describe('DELETE /api/v1/sessions', () => {
       const createdUser = await orchestrator.createUser()
       const sessionObject = await orchestrator.createSession(createdUser.id)
 
-      const response = await fetch('http://localhost:3000/api/v1/sessions', {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -119,7 +120,7 @@ describe('DELETE /api/v1/sessions', () => {
       // Double check assertions
 
       const doubleCheckResponse = await fetch(
-        'http://localhost:3000/api/v1/user',
+        `${webserver.origin}/api/v1/user`,
         {
           headers: {
             Cookie: `session_id=${sessionObject.token}`,
