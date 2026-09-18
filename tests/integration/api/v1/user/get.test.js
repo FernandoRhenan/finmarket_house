@@ -3,6 +3,7 @@ import orchestrator from 'tests/orchestrator.js'
 import { beforeAll, describe, expect, test, vitest } from 'vitest'
 import session from 'models/session'
 import setCookieParser from 'set-cookie-parser'
+import webserver from 'infra/webserver'
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices()
@@ -17,7 +18,7 @@ describe('GET /api/v1/user', () => {
         username: 'UserWithForbiddenSession',
       })
 
-      const response = await fetch('http://localhost:3000/api/v1/user')
+      const response = await fetch(`${webserver.origin}/api/v1/user`)
 
       expect(response.status).toBe(403)
 
@@ -41,7 +42,7 @@ describe('GET /api/v1/user', () => {
       await orchestrator.activateUserById(createdUser.id)
       const sessionObject = await orchestrator.createSession(createdUser.id)
 
-      const response = await fetch('http://localhost:3000/api/v1/user', {
+      const response = await fetch(`${webserver.origin}/api/v1/user`, {
         headers: {
           Cookie: `session_id=${sessionObject.token}`,
         },
@@ -93,6 +94,7 @@ describe('GET /api/v1/user', () => {
         maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
         path: '/',
         httpOnly: true,
+        sameSite: 'Lax',
       })
     })
 
@@ -109,7 +111,7 @@ describe('GET /api/v1/user', () => {
 
       vitest.useRealTimers()
 
-      const response = await fetch('http://localhost:3000/api/v1/user', {
+      const response = await fetch(`${webserver.origin}/api/v1/user`, {
         headers: {
           Cookie: `session_id=${sessionObject.token}`,
         },
@@ -169,6 +171,7 @@ describe('GET /api/v1/user', () => {
         maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
         path: '/',
         httpOnly: true,
+        sameSite: 'Lax',
       })
     })
 
@@ -176,7 +179,7 @@ describe('GET /api/v1/user', () => {
       const nonexistentToken =
         '35157aceca195438761fb35c33369f29edfa28f38e7e7eb9acd63dfa1df4980cf2b141dbf17259386aa1156a1eb569c2'
 
-      const response = await fetch('http://localhost:3000/api/v1/user', {
+      const response = await fetch(`${webserver.origin}/api/v1/user`, {
         headers: {
           Cookie: `session_id=${nonexistentToken}`,
         },
@@ -221,7 +224,7 @@ describe('GET /api/v1/user', () => {
 
       vitest.useRealTimers()
 
-      const response = await fetch('http://localhost:3000/api/v1/user', {
+      const response = await fetch(`${webserver.origin}/api/v1/user`, {
         headers: {
           Cookie: `session_id=${sessionObject.token}`,
         },

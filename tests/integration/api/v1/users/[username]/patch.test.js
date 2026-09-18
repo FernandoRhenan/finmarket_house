@@ -3,6 +3,7 @@ import orchestrator from 'tests/orchestrator.js'
 import { beforeAll, describe, expect, test } from 'vitest'
 import user from 'models/user'
 import password from 'models/password'
+import webserver from 'infra/webserver'
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices()
@@ -19,7 +20,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       })
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${user.username}`,
+        `${webserver.origin}/api/v1/users/${user.username}`,
         {
           method: 'PATCH',
           headers: {
@@ -51,7 +52,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       const session = await orchestrator.createSession(createdUser.id)
 
       const response = await fetch(
-        'http://localhost:3000/api/v1/users/UsuarioInexistente',
+        `${webserver.origin}/api/v1/users/UsuarioInexistente`,
         {
           method: 'PATCH',
           headers: {
@@ -79,7 +80,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       await orchestrator.activateUserById(createdUser.id)
       const session = await orchestrator.createSession(createdUser.id)
 
-      const response = await fetch('http://localhost:3000/api/v1/users/user2', {
+      const response = await fetch(`${webserver.origin}/api/v1/users/user2`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       })
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${firstUser.username}`,
+        `${webserver.origin}/api/v1/users/${firstUser.username}`,
         {
           method: 'PATCH',
           headers: {
@@ -149,7 +150,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       const session = await orchestrator.createSession(user.id)
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${user.username}`,
+        `${webserver.origin}/api/v1/users/${user.username}`,
         {
           method: 'PATCH',
           headers: {
@@ -189,7 +190,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       await orchestrator.activateUserById(userB.id)
       const userBSession = await orchestrator.createSession(userB.id)
 
-      const response = await fetch('http://localhost:3000/api/v1/users/userA', {
+      const response = await fetch(`${webserver.origin}/api/v1/users/userA`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -223,7 +224,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       const session = await orchestrator.createSession(user.id)
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${user.username}`,
+        `${webserver.origin}/api/v1/users/${user.username}`,
         {
           method: 'PATCH',
           headers: {
@@ -248,7 +249,9 @@ describe('PATCH /api/v1/users/[username]', () => {
         updated_at: responseBody.updated_at,
       })
 
-      expect(responseBody.email).not.toBe(user.email)
+      const userWithEmailChanged = await orchestrator.getUserById(user.id)
+
+      expect(userWithEmailChanged.email).toBe('uniqueemailuser2@email.com')
 
       expect(uuidVersion(responseBody.id)).toBe(4)
       expect(Date.parse(responseBody.created_at)).not.toBeNaN()
@@ -265,7 +268,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       const session = await orchestrator.createSession(createdUser.id)
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${createdUser.username}`,
+        `${webserver.origin}/api/v1/users/${createdUser.username}`,
         {
           method: 'PATCH',
           headers: {
@@ -329,7 +332,7 @@ describe('PATCH /api/v1/users/[username]', () => {
       const defaultUser = await orchestrator.createUser()
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/users/${defaultUser.username}`,
+        `${webserver.origin}/api/v1/users/${defaultUser.username}`,
         {
           method: 'PATCH',
           headers: {
