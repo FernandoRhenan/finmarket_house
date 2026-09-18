@@ -13,7 +13,7 @@ export default router.handler(controller.errorHandlers)
 
 async function postHandler(request, response) {
   const userTryingToPost = request.context.user
-  const userInputValues = JSON.parse(request.body)
+  const userInputValues = request.body
   const newUser = await user.create(userInputValues)
 
   const activationToken = await activation.create(newUser.id)
