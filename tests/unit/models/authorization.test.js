@@ -73,14 +73,16 @@ describe('models/authorization.js', () => {
         features: ['read:user'],
       }
 
+      const date = new Date().toISOString()
+
       const resource = {
         id: 1,
         username: 'resource',
         email: 'resource@resource.com',
         password: 'resource',
         features: ['read:user'],
-        created_at: '2026-01-01T00:00:00.000Z',
-        updated_at: '2026-01-01T00:00:00.000Z',
+        created_at: date,
+        updated_at: date,
       }
 
       const result = authorization.filterOutput(user, 'read:user', resource)
@@ -89,8 +91,8 @@ describe('models/authorization.js', () => {
         id: 1,
         username: 'resource',
         features: ['read:user'],
-        created_at: '2026-01-01T00:00:00.000Z',
-        updated_at: '2026-01-01T00:00:00.000Z',
+        created_at: date,
+        updated_at: date,
       })
     })
 
