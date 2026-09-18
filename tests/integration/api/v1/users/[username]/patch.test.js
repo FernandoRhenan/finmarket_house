@@ -249,7 +249,9 @@ describe('PATCH /api/v1/users/[username]', () => {
         updated_at: responseBody.updated_at,
       })
 
-      expect(responseBody.email).not.toBe(user.email)
+      const userWithEmailChanged = await orchestrator.getUserById(user.id)
+
+      expect(userWithEmailChanged.email).toBe('uniqueemailuser2@email.com')
 
       expect(uuidVersion(responseBody.id)).toBe(4)
       expect(Date.parse(responseBody.created_at)).not.toBeNaN()

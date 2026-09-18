@@ -65,6 +65,10 @@ async function createUser(userObject) {
   })
 }
 
+async function getUserById(userId) {
+  return await user.findOneById(userId)
+}
+
 async function createSession(userId) {
   return await session.create(userId)
 }
@@ -117,6 +121,7 @@ const orchestrator = {
   getTokenFromEmail,
   activateUserById,
   addFeaturesToUser,
+  getUserById,
 }
 
 export default orchestrator
